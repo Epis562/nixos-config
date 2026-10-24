@@ -12,7 +12,10 @@
   home.username = "mrepis";
   home.homeDirectory = "/home/mrepis";
 
-  programs.noctalia.enable = true;
+  programs.noctalia = {
+    enable = true;
+    package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  };
 
   home.packages = with pkgs; [
     wl-clipboard
@@ -24,7 +27,6 @@
     vesktop
     spotify
     vscode
-    docker
     jetbrains.idea
     jetbrains.webstorm
     python3Minimal
@@ -41,7 +43,12 @@
     sushi
     ffmpegthumbnailer
     playerctl
-
+    opencode
+    kdePackages.kate
+    peazip
+    kdePackages.okular
+    libtelnet
+    hypridle
   ];
 
   programs.fuzzel = {
@@ -72,6 +79,49 @@
     enable = true;
     defaultApplications = {
       "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
+    };
+  };
+
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-themes = true;
+    };
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-themes = true;
+    };
+  };
+
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+      gtk-theme = "Adwaita-dark";
+    };
+  };
+
+  qt = {
+    enable = true;
+    platformTheme.name = "adwaita";
+    style.name = "adwaita-dark";
+  };
+
+  services.hypridle = {
+    enable = true;
+    settings = {
+      listener = [
+        {
+          timeout = 600; 
+          on-timeout = "loginctl lock-session"; 
+        }
+        {
+          timeout = 1800; 
+          on-timeout = "systemctl suspend"; 
+        }
+      ];
     };
   };
 

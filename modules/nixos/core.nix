@@ -29,7 +29,7 @@
 
   users.users.mrepis = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "input" ];
+    extraGroups = [ "wheel" "networkmanager" "video" "input" "docker" ];
     shell = pkgs.zsh;
   };
 
@@ -38,13 +38,20 @@
     git
     curl
     wget
+    zip
     unzip
     tree
     hunspell
     hunspellDicts.fr-moderne
     aspell
     aspellDicts.fr
+    docker
+    docker-compose
   ];
+
+  virtualisation.docker = {
+    enable = true;
+  };
 
   environment.variables = {
     DICPATH = "${pkgs.hunspellDicts.fr-moderne}/share/hunspell";

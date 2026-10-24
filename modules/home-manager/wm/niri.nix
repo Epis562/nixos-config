@@ -13,6 +13,11 @@
 	 position x=1920 y=0
     }
 
+    hotkey-overlay {
+      skip-at-startup
+    }
+
+
 
     prefer-no-csd
 

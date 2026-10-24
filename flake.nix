@@ -10,8 +10,7 @@
     };
 
     noctalia = {
-      url = "github:noctalia-dev/noctalia";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:noctalia-dev/noctalia/cachix";
     };
   };
 
@@ -24,6 +23,10 @@
           ./hosts/larptop
           home-manager.nixosModules.home-manager
           {
+            nix.settings = {
+              extra-substituters = [ "https://noctalia.cachix.org" ];
+              extra-trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
+            };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
