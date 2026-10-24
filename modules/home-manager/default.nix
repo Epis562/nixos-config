@@ -48,7 +48,6 @@
     peazip
     kdePackages.okular
     libtelnet
-    hypridle
   ];
 
   programs.fuzzel = {
@@ -107,22 +106,6 @@
     enable = true;
     platformTheme.name = "adwaita";
     style.name = "adwaita-dark";
-  };
-
-  services.hypridle = {
-    enable = true;
-    settings = {
-      listener = [
-        {
-          timeout = 600; 
-          on-timeout = "loginctl lock-session"; 
-        }
-        {
-          timeout = 1800; 
-          on-timeout = "systemctl suspend"; 
-        }
-      ];
-    };
   };
 
   home.stateVersion = "26.05";
