@@ -47,7 +47,7 @@
     kdePackages.kate
     peazip
     kdePackages.okular
-    libtelnet
+    lazygit
   ];
 
   programs.fuzzel = {
@@ -70,6 +70,26 @@
       border = {
         radius = 8;
 	width = 1;
+      };
+    };
+  };
+
+  programs.lazygit = {
+    enable = true;
+    settings = {
+      gui = {
+        theme = {
+          activeBorderColor = [
+            "blue"
+            "bold"
+          ];
+          inactiveBorderColor = [
+            "white"
+          ];
+          selectedLineBgColor = [
+            "default"
+          ];
+        };
       };
     };
   };
