@@ -80,7 +80,7 @@
       gui = {
         theme = {
           activeBorderColor = [
-            "blue"
+            "magenta"
             "bold"
           ];
           inactiveBorderColor = [

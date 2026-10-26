@@ -31,11 +31,13 @@
       ll = "lsd -lah";
       nv = "nvim";
       ls = "lsd -l";
+      lst = "lsd -l --tree";
       cat = "bat";
       nrsw = "sudo nixos-rebuild switch --flake .#$(hostname)";
       up = "cd /home/mrepis/nixos-config/ && nix flake update && nrsw && reboot";
       br0 = "brightnessctl -d \"tpacpi::kbd_backlight\" set 0";
       br2 = "brightnessctl -d \"tpacpi::kbd_backlight\" set 2";
+      lg = "lazygit";
     };
 
     loginExtra = ''
