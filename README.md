@@ -28,29 +28,42 @@ Currently, it’s only configured for my laptop (named `larptop`), but moving my
 
 ## Repository Structure
 
-```
-.
-├── flake.nix                       # Flake entry point (hosts & dependencies)
-├── flake.lock                      # Pinned dependencies lockfile
-├── hosts/
-│   ├── larptop/                    # Laptop configuration
-│   │   ├── default.nix             # Laptop-specific options (hostName, battery/power)
-│   │   └── hardware-configuration.nix
-│   └── desktop/                    # (Planned) Desktop workstation
-└── modules/
-    ├── nixos/                      # Shared system-level configurations
-    │   ├── core.nix                # Bootloader, locales, user accounts, base packages
-    │   ├── desktop.nix             # Niri, Greetd, graphics, fonts, audio
-    │   └── gaming.nix              # Steam configuration
-    └── home-manager/               # Shared user-level configurations
-        ├── default.nix             # User packages, MIME associations
-        ├── shell.nix               # Zsh, Direnv, Fastfetch configuration
-        ├── terminal.nix            # Alacritty configuration
-        ├── neovim.nix              # Neovim, plugins, Catppuccin theme
-        └── wm/
-            └── niri.nix            # Niri layout, keybindings, and rules
+The config follows the [dendritic pattern](https://github.com/mightyiam/dendritic): every `.nix` file under `modules/` is a [flake-parts](https://flake.parts) module, loaded automatically by [import-tree](https://github.com/vic/import-tree). File paths carry no meaning to Nix, they only exist for organisation, so files can be moved or renamed freely (a path segment starting with `_` is ignored).
+
+Each file defines one *feature*, as `flake.modules.nixos.<name>` (system side) and/or `flake.modules.homeManager.<name>` (home-manager side). Features with real configuration get their own file; plain package lists and one-liners are folded into the bundle that uses them. Several files can still contribute to the same feature (e.g. `hosts/larptop/home.nix` appends monitor outputs to the niri config).
 
 ```
+.
+├── flake.nix                 # Inputs + `mkFlake (import-tree ./modules)`, nothing else
+└── modules/
+    ├── flake/                # Flake plumbing: systems, `configurations.nixos` -> nixosConfigurations, checks
+    ├── system/               # base (nix, boot, firmware, core packages), locale, networking, home-manager, laptop, spellcheck
+    ├── services/             # audio, docker, flatpak
+    ├── desktop/              # desktop (bundle + fonts, portals, file manager...), niri, greetd, noctalia, fuzzel, alacritty, theme
+    ├── programs/             # shell (zsh, direnv, fastfetch...), neovim, editors, git, dev, apps
+    ├── gaming.nix            # Steam
+    ├── users/
+    │   └── mrepis.nix        # The user account + their home-manager feature list
+    └── hosts/
+        └── larptop/
+            ├── default.nix   # Which features the laptop uses
+            ├── hardware.nix  # Former hardware-configuration.nix
+            └── home.nix      # Laptop-only home-manager bits (monitor outputs, kbd backlight aliases)
+```
+
+### How features reach a machine
+
+* A **host** (`hosts/<name>/default.nix`) declares `configurations.nixos.<name>` and imports NixOS features/bundles (`base`, `desktop`, `gaming`, `laptop`, ...) plus a user (`mrepis`).
+* A **user** (`users/mrepis.nix`) creates the account and imports the home-manager features they want on every machine (`shell`, `editors`, `dev`, `apps`).
+* The **desktop** bundle imports the system side of the graphical session *and* adds its home-manager side (niri config, noctalia, fuzzel, theme...) to every home-manager user of the host via `home-manager.sharedModules`.
+* Host-specific home-manager config (monitor layout, hardware quirks) lives in `hosts/<name>/home.nix` and is added the same way.
+
+### Adding the desktop
+
+1. Generate its hardware config and put it in `modules/hosts/<name>/hardware.nix` as `flake.modules.nixos.<name>`, like the laptop.
+2. Copy `modules/hosts/larptop/default.nix`, rename it, and drop `laptop` from the imports.
+3. Put its monitor `output` blocks (and anything else machine-specific) in `modules/hosts/<name>/home.nix`.
+4. `sudo nixos-rebuild switch --flake .#<name>`. `nix flake check` builds every host.
 
 ## Theme & Appearance
 
