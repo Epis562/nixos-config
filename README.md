@@ -30,22 +30,18 @@ Currently, it’s only configured for my laptop (named `larptop`), but moving my
 
 The config follows the [dendritic pattern](https://github.com/mightyiam/dendritic): every `.nix` file under `modules/` is a [flake-parts](https://flake.parts) module, loaded automatically by [import-tree](https://github.com/vic/import-tree). File paths carry no meaning to Nix, they only exist for organisation, so files can be moved or renamed freely (a path segment starting with `_` is ignored).
 
-Each file defines one *feature*, as `flake.modules.nixos.<name>` (system side) and/or `flake.modules.homeManager.<name>` (home-manager side). Several files can contribute to the same feature (e.g. all of `desktop/niri/`).
+Each file defines one *feature*, as `flake.modules.nixos.<name>` (system side) and/or `flake.modules.homeManager.<name>` (home-manager side). Features with real configuration get their own file; plain package lists and one-liners are folded into the bundle that uses them. Several files can still contribute to the same feature (e.g. `hosts/larptop/home.nix` appends monitor outputs to the niri config).
 
 ```
 .
 ├── flake.nix                 # Inputs + `mkFlake (import-tree ./modules)`, nothing else
 └── modules/
     ├── flake/                # Flake plumbing: systems, `configurations.nixos` -> nixosConfigurations, checks
-    ├── nix/                  # Nix settings, GC, rebuild aliases
-    ├── system/               # base (bundle), boot, locale, networking, firmware, home-manager, laptop, spellcheck
-    ├── services/             # audio, bluetooth, docker, flatpak
-    ├── desktop/              # desktop (bundle), niri/, greetd, noctalia, fuzzel, alacritty, theme, fonts, portals...
-    ├── gaming/               # gaming (bundle), steam
-    ├── shell/                # shell (bundle), zsh, direnv, fastfetch, bat, lsd, btop
-    ├── editors/              # editors (bundle), neovim, vscode, jetbrains, kate
-    ├── dev/                  # dev (bundle), git-tools (gh, lazygit), python, java, c, nodejs, ai-tools
-    ├── apps/                 # apps (bundle), firefox, vesktop, spotify, peazip, okular
+    ├── system/               # base (nix, boot, firmware, core packages), locale, networking, home-manager, laptop, spellcheck
+    ├── services/             # audio, docker, flatpak
+    ├── desktop/              # desktop (bundle + fonts, portals, file manager...), niri, greetd, noctalia, fuzzel, alacritty, theme
+    ├── programs/             # shell (zsh, direnv, fastfetch...), neovim, editors, git, dev, apps
+    ├── gaming.nix            # Steam
     ├── users/
     │   └── mrepis.nix        # The user account + their home-manager feature list
     └── hosts/

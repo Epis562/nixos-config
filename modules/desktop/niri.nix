@@ -1,6 +1,71 @@
 {
+  flake.modules.nixos.niri =
+    { pkgs, ... }:
+    {
+      programs.niri.enable = true;
+      programs.xwayland.enable = true;
+
+      environment.systemPackages = [ pkgs.xwayland-satellite ];
+    };
+
+  # Monitor `output` blocks are host-specific and get appended to this file
+  # from hosts/<name>/home.nix.
   flake.modules.homeManager.niri = {
     xdg.configFile."niri/config.kdl".text = ''
+      spawn-at-startup "noctalia"
+
+      hotkey-overlay {
+          skip-at-startup
+      }
+
+      prefer-no-csd
+
+      input {
+          keyboard {
+              xkb {
+                  layout "fr"
+              }
+          }
+          touchpad {
+              tap
+              natural-scroll
+          }
+          mouse {
+              accel-profile "flat"
+              accel-speed -0.1
+          }
+      }
+
+      layout {
+          gaps 15
+          center-focused-column "never"
+
+          focus-ring {
+              width 4
+              active-color "#b89cff"
+          }
+      }
+
+      window-rule {
+          geometry-corner-radius 12
+          clip-to-geometry true
+      }
+
+      window-rule {
+          match app-id="firefox"
+          default-column-width { proportion 0.8; }
+      }
+
+      window-rule {
+          match app-id="Alacritty"
+          draw-border-with-background false
+      }
+
+      window-rule {
+          match app-id="vesktop"
+          default-column-width { proportion 0.6; }
+      }
+
       binds {
           Mod+Q { close-window; }
           Mod+Left  { focus-column-left; }
@@ -39,6 +104,12 @@
           XF86AudioNext         allow-when-locked=true { spawn "playerctl" "next"; }
           XF86AudioPrev         allow-when-locked=true { spawn "playerctl" "previous"; }
       }
+    '';
+
+    programs.zsh.loginExtra = ''
+      if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+        exec niri
+      fi
     '';
   };
 }

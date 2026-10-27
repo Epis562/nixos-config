@@ -4,7 +4,7 @@
   flake.modules.nixos.mrepis =
     { pkgs, ... }:
     {
-      imports = [ config.flake.modules.nixos.zsh ];
+      imports = [ config.flake.modules.nixos.shell ];
 
       users.users.mrepis = {
         isNormalUser = true;

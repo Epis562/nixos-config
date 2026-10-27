@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.git-tools =
+  flake.modules.homeManager.git =
     { pkgs, ... }:
     {
       home.packages = [ pkgs.gh ];

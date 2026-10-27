@@ -1,7 +1,7 @@
 { lib, config, inputs, ... }:
 
 # Hosts are declared as `configurations.nixos.<hostname>.module` and turned
-# into `nixosConfigurations.<hostname>` here.
+# into `nixosConfigurations.<hostname>` here. `nix flake check` builds them all.
 {
   options.configurations.nixos = lib.mkOption {
     type = lib.types.lazyAttrsOf (
@@ -23,4 +23,12 @@
       ];
     }
   ) config.configurations.nixos;
+
+  config.perSystem =
+    { system, ... }:
+    {
+      checks = lib.mapAttrs' (name: nixos: lib.nameValuePair "nixos-${name}" nixos.config.system.build.toplevel) (
+        lib.filterAttrs (_: nixos: nixos.pkgs.stdenv.hostPlatform.system == system) config.flake.nixosConfigurations
+      );
+    };
 }
