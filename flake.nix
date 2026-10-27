@@ -1,8 +1,15 @@
 {
-  description = "NixOS + Niri + Noctalia Shell Multi-Host";
+  description = "NixOS + Niri + Noctalia Shell Multi-Host (dendritic)";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
+    import-tree.url = "github:vic/import-tree";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -14,27 +21,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
-    nixosConfigurations = {
-      larptop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/larptop
-          home-manager.nixosModules.home-manager
-          {
-            nix.settings = {
-              extra-substituters = [ "https://noctalia.cachix.org" ];
-              extra-trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
-            };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.mrepis = import ./modules/home-manager;
-            home-manager.backupFileExtension = "backup";
-          }
-        ];
-      };
-    };
-  };
+  # Every .nix file under ./modules is a flake-parts module (paths containing
+  # a `/_` segment are ignored by import-tree).
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }
