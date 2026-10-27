@@ -23,7 +23,15 @@
   };
   console.keyMap = "fr";
 
-  networking.networkmanager.enable = true;
+  networking = {
+    networkmanager = {
+      enable = true;
+      dns = "none";
+    };
+    nameservers = [ "1.1.1.1" "9.9.9.9" ];
+  };
+
+  hardware.enableAllFirmware = true;
 
   programs.zsh.enable = true;
 
@@ -51,6 +59,16 @@
 
   virtualisation.docker = {
     enable = true;
+  };
+
+  services.flatpak.enable = true;
+
+  systemd.services.flatpak-repo = {
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.flatpak ];
+    script = ''
+      flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    '';
   };
 
   environment.variables = {
