@@ -7,6 +7,7 @@
     imports = with config.flake.modules.nixos; [
       base
       desktop
+      niri
       gaming
       laptop
       docker
@@ -15,7 +16,10 @@
       mrepis
     ];
 
-    home-manager.sharedModules = [ config.flake.modules.homeManager.larptop ];
+    home-manager.sharedModules = with config.flake.modules.homeManager; [
+      mauve
+      larptop
+    ];
 
     system.stateVersion = "26.05";
   };

@@ -1,27 +1,32 @@
 {
-  flake.modules.homeManager.fuzzel = {
-    programs.fuzzel = {
-      enable = true;
-      settings = {
-        main = {
-          font = "JetBrainsMono Nerd Font:size=12";
-          lines = 8;
-          auto-select = true;
-        };
-        colors = {
-          background = "1a1626e6";
-          text = "e8e1f5ff";
-          match = "cba6f7ff";
-          selection = "41355eff";
-          selection-text = "f5f0ffff";
-          selection-match = "f5c2e7ff";
-          border = "f5c2e7ff";
-        };
-        border = {
-          radius = 8;
-          width = 1;
+  flake.modules.homeManager.fuzzel =
+    { config, ... }:
+    let
+      p = config.palette;
+    in
+    {
+      programs.fuzzel = {
+        enable = true;
+        settings = {
+          main = {
+            font = "JetBrainsMono Nerd Font:size=12";
+            lines = 8;
+            auto-select = true;
+          };
+          colors = {
+            background = "${p.base}e6";
+            text = "${p.text}ff";
+            match = "${p.primary}ff";
+            selection = "${p.surface}ff";
+            selection-text = "${p.textBright}ff";
+            selection-match = "${p.accent}ff";
+            border = "${p.accent}ff";
+          };
+          border = {
+            radius = 8;
+            width = 1;
+          };
         };
       };
     };
-  };
 }
