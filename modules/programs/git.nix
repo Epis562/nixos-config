@@ -1,6 +1,6 @@
 {
   flake.modules.homeManager.git =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
       home.packages = [ pkgs.gh ];
 
@@ -10,7 +10,7 @@
           gui = {
             theme = {
               activeBorderColor = [
-                "magenta"
+                config.palette.ansi
                 "bold"
               ];
               inactiveBorderColor = [

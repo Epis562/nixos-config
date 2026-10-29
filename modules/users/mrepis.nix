@@ -12,6 +12,9 @@
         shell = pkgs.zsh;
       };
 
+      # The VM starts from a blank state, so it needs a known password.
+      virtualisation.vmVariant.users.users.mrepis.initialPassword = "nixos";
+
       home-manager.users.mrepis.imports = [ config.flake.modules.homeManager.mrepis ];
     };
 

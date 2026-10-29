@@ -1,13 +1,13 @@
 { config, ... }:
 
-# The graphical session. Pulls in the system side of every desktop feature
+# The graphical session, minus the compositor: hosts import `niri` or
+# `hyprland` next to this. Pulls in the system side of every desktop feature
 # and hands their home-manager side to every home-manager user on the host.
 {
   flake.modules.nixos.desktop =
     { pkgs, ... }:
     {
       imports = with config.flake.modules.nixos; [
-        niri
         greetd
         audio
         noctalia
@@ -45,7 +45,6 @@
     { pkgs, ... }:
     {
       imports = with config.flake.modules.homeManager; [
-        niri
         noctalia
         fuzzel
         alacritty

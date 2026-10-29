@@ -9,6 +9,7 @@
         locale
         networking
         home-manager
+        vm
       ];
 
       nix.settings = {

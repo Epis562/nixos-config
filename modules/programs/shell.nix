@@ -5,7 +5,13 @@
   };
 
   flake.modules.homeManager.shell =
-    { config, pkgs, ... }:
+    { config, lib, pkgs, ... }:
+    let
+      p = config.palette;
+      prompt = map (c: "%{%F{${toString c}}%}") p.prompt;
+      # "cba6f7" -> "38;2;203;166;247"
+      rgb = hex: "38;2;" + lib.concatMapStringsSep ";" (i: toString (lib.fromHexString (builtins.substring i 2 hex))) [ 0 2 4 ];
+    in
     {
       home.packages = with pkgs; [
         bat
@@ -25,7 +31,7 @@
         syntaxHighlighting.enable = true;
 
         initContent = ''
-          export PS1="%{%F{165}%}%n%{%F{171}%}@%{%F{213}%}%m %{%F{219}%}%1~ %{%f%}$ "
+          export PS1="${builtins.elemAt prompt 0}%n${builtins.elemAt prompt 1}@${builtins.elemAt prompt 2}%m ${builtins.elemAt prompt 3}%1~ %{%f%}$ "
           fastfetch
         '';
 
@@ -56,14 +62,14 @@
             source = "NixOS2";
             padding.right = 2;
             color = {
-              "1" = "38;2;180;142;173";
-              "2" = "38;2;203;166;247";
+              "1" = rgb p.secondary;
+              "2" = rgb p.primary;
             };
           };
           display.separator = " -> ";
           display.color = {
-            keys = "38;2;203;166;247";
-            separator = "38;2;180;142;173";
+            keys = rgb p.primary;
+            separator = rgb p.secondary;
           };
           modules = [
             { type = "os"; key = "OS"; }
