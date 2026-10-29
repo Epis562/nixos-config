@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, inputs, ... }:
 
 {
   flake.modules.homeManager.dev =
@@ -8,12 +8,14 @@
 
       home.packages = with pkgs; [
         python3Minimal
+	uv
         jetbrains.jdk
         maven
         gcc
         elmPackages.nodejs
         antigravity-cli
         claude-code
+        inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop-with-fhs
       ];
     };
 }

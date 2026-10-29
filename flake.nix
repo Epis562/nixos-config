@@ -19,6 +19,12 @@
     noctalia = {
       url = "github:noctalia-dev/noctalia/cachix";
     };
+
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+      # pinned to upstream's locked rev: it still uses nodePackages.asar
+      inputs.nixpkgs.url = "github:NixOS/nixpkgs/6ad174a6dc07c7742fc64005265addf87ad08615";
+    };
   };
 
   # Every .nix file under ./modules is a flake-parts module (paths containing
