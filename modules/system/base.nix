@@ -10,6 +10,7 @@
         networking
         home-manager
         vm
+        auto-upgrade
       ];
 
       nix.settings = {

@@ -1,0 +1,38 @@
+name: build
+
+# Builds every host and pushes the results to the epis-nixos cache. Runs on
+# pushes to main, and is called by update-dependencies for the lock update PR.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
+    secrets:
+      CACHIX_AUTH_TOKEN:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        host: [desktop, larptop]
+    steps:
+      # The runner only has ~14 GB free; a full desktop closure needs more.
+      - uses: jlumbroso/free-disk-space@v1.3.1
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - uses: cachix/install-nix-action@v31
+      - uses: cachix/cachix-action@v16
+        with:
+          name: epis-nixos
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extraPullNames: noctalia
+      - run: nix build --print-build-logs .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel

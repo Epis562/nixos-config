@@ -12,8 +12,29 @@ permissions:
 jobs:
   update-dependencies:
     runs-on: ubuntu-latest
+    outputs:
+      pr: ${{ steps.update.outputs.pull-request-number }}
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v23
       - id: update
         uses: DeterminateSystems/update-flake-lock@v29
+
+  # PRs opened with GITHUB_TOKEN don't trigger other workflows, so the build
+  # is called from here instead of on pull_request.
+  build:
+    needs: update-dependencies
+    if: needs.update-dependencies.outputs.pr != ''
+    uses: ./.github/workflows/build.yml
+    with:
+      ref: update_flake_lock_action
+    secrets:
+      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+  merge:
+    needs: [update-dependencies, build]
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh pr merge ${{ needs.update-dependencies.outputs.pr }} --repo ${{ github.repository }} --squash --delete-branch
+        env:
+          GH_TOKEN: ${{ github.token }}
