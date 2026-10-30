@@ -4,7 +4,6 @@
     {
       environment.systemPackages = with pkgs; [
         kdePackages.kdenlive
-        davinci-resolve
         audacity
         ffmpeg-full
         mediainfo

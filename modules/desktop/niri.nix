@@ -112,11 +112,5 @@
             XF86AudioPrev         allow-when-locked=true { spawn "playerctl" "previous"; }
         }
       '';
-
-      programs.zsh.loginExtra = ''
-        if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-          exec niri
-        fi
-      '';
     };
 }
