@@ -1,28 +1,19 @@
-# PLACEHOLDER until NixOS is installed on the desktop: replace the body with
-# the output of `nixos-generate-config --show-hardware-config` (keep the
-# `flake.modules.nixos.desktop-pc` wrapper). Until then it assumes the
-# partition labels from the NixOS manual (`nixos` and `boot`).
 {
   flake.modules.nixos.desktop-pc =
-    { config, lib, modulesPath, ... }:
     {
-      imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+      imports = [ ./_hardware-configuration.nix ];
 
-      boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      boot.kernelModules = [ "kvm-amd" ];
-
-      fileSystems."/" = {
-        device = "/dev/disk/by-label/nixos";
+      fileSystems."/media/games" = {
+        device = "/dev/disk/by-uuid/2c8416b9-eeb8-4122-8758-0bde6c02eec8";
         fsType = "ext4";
+	options = [ "nofail" ];
       };
 
-      fileSystems."/boot" = {
-        device = "/dev/disk/by-label/boot";
-        fsType = "vfat";
-        options = [ "fmask=0022" "dmask=0022" ];
+      fileSystems."/media/data" = {
+        device = "/dev/disk/by-uuid/6E0C8B510C8B12EF";
+        fsType = "ntfs";
+        options = [ "nofail" ];
       };
 
-      nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-      hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     };
 }
