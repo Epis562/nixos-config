@@ -43,6 +43,10 @@
         extraConfig = ''
           local mainMod = "SUPER"
 
+          -- UWSM forwards these from Hyprland's environment to every app.
+          hl.env("XCURSOR_THEME", "${config.home.pointerCursor.name}")
+          hl.env("XCURSOR_SIZE",  "${toString config.home.pointerCursor.size}")
+
           hl.on("hyprland.start", function()
               hl.exec_cmd("noctalia")
           end)

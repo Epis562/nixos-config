@@ -14,11 +14,23 @@
           })
       end
 
+      hl.on("hyprland.start", function()
+          hl.exec_cmd("vesktop")
+      end)
+
       hl.config({
           -- Variable refresh rate in fullscreen apps only.
           misc = { vrr = 2 },
           -- Lets games opt out of vsync for lower latency.
           general = { allow_tearing = true },
+      })
+
+      -- Geometry Dash's own fullscreen renders at a low resolution under
+      -- Proton, so it runs windowed at 1920x1080 and Hyprland fullscreens it.
+      hl.window_rule({
+          name       = "geometry-dash-fullscreen",
+          match      = { class = "^steam_app_322170$" },
+          fullscreen = true,
       })
 
       hl.window_rule({
