@@ -50,7 +50,7 @@
           hl.config({
               general = {
                   gaps_in     = 5,
-                  gaps_out    = 15,
+                  gaps_out    = 10,
                   border_size = 3,
                   col = {
                       active_border   = { colors = { "rgba(${p.primary}ff)", "rgba(${p.secondary}ff)" }, angle = 45 },
@@ -67,6 +67,11 @@
                   preserve_split = true,
               },
 
+              -- Fullscreen apps skip compositing for lower latency.
+              render = {
+                  direct_scanout = 2,
+              },
+
               misc = {
                   force_default_wallpaper = 0,
                   disable_hyprland_logo   = true,
@@ -77,8 +82,12 @@
                   follow_mouse  = 1,
                   accel_profile = "flat",
                   sensitivity   = -0.1,
+                  repeat_delay  = 400,
               },
           })
+
+          -- Every animation inherits from global; the default speed is 8 (800ms).
+          hl.animation({ leaf = "global", enabled = true, speed = 5, bezier = "default" })
 
           hl.window_rule({
               name  = "suppress-maximize-events",
@@ -92,11 +101,20 @@
               no_focus = true,
           })
 
+          hl.window_rule({
+              name  = "steam-float-dialogs",
+              match = { class = "^steam$", title = "negative:^Steam$" },
+              float = true,
+          })
+
           hl.bind(mainMod .. " + Q",         hl.dsp.window.close())
           hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exit())
           hl.bind(mainMod .. " + F",         hl.dsp.window.fullscreen({ mode = "maximized" }))
           hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
           hl.bind(mainMod .. " + V",         hl.dsp.window.float({ action = "toggle" }))
+          -- Resets the focused split back to 50/50.
+          hl.bind(mainMod .. " + R",         hl.dsp.layout("splitratio 1 exact"))
+          hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("noctalia msg session lock"))
 
           hl.bind(mainMod .. " + SPACE",  hl.dsp.exec_cmd("fuzzel"))
           hl.bind(mainMod .. " + B",      hl.dsp.exec_cmd("firefox"))

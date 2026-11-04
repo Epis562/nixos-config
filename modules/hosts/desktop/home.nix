@@ -2,9 +2,17 @@
 {
   flake.modules.homeManager.desktop-pc = {
     wayland.windowManager.hyprland.extraConfig = ''
-      -- Every monitor at its highest refresh rate. Replace with one rule per
-      -- output (see `hyprctl monitors`) to set positions.
-      hl.monitor({ output = "", mode = "highrr", position = "auto", scale = 1 })
+      hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@60",  position = "0x0",    scale = 1 })
+      hl.monitor({ output = "DP-1",     mode = "1920x1080@144", position = "1920x0", scale = 1 })
+
+      -- 1-5 on the 144Hz main monitor, 6-10 on the side one.
+      for i = 1, 10 do
+          hl.workspace_rule({
+              workspace = tostring(i),
+              monitor   = i <= 5 and "DP-1" or "HDMI-A-1",
+              default   = i == 1 or i == 6,
+          })
+      end
 
       hl.config({
           -- Variable refresh rate in fullscreen apps only.
