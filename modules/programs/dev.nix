@@ -16,7 +16,7 @@
         antigravity-cli
         claude-code
 	opencode
-        inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop-with-fhs
+        inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop-fhs
       ];
     };
 }
