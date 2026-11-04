@@ -11,6 +11,10 @@
       xwayland.enable = true;
     };
 
+    # The common gnome;gtk default from `desktop` would otherwise win, and the
+    # GNOME portal can only screencast under GNOME Shell.
+    xdg.portal.config.hyprland.default = [ "hyprland" "gtk" ];
+
     # Virtio GPUs have no usable hardware cursor.
     virtualisation.vmVariant.home-manager.sharedModules = [
       {
