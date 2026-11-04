@@ -5,8 +5,6 @@
   flake.modules.nixos.streaming =
     { pkgs, ... }:
     {
-      home-manager.sharedModules = [ config.flake.modules.homeManager.streaming ];
-
       programs.obs-studio = {
         enable = true;
         enableVirtualCamera = true;
@@ -23,9 +21,4 @@
       programs.gpu-screen-recorder.enable = true;
       environment.systemPackages = [ pkgs.gpu-screen-recorder-gtk ];
     };
-
-  # Microphone noise suppression / EQ.
-  flake.modules.homeManager.streaming = {
-    services.easyeffects.enable = true;
-  };
 }
