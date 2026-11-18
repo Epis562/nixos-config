@@ -28,6 +28,10 @@
       # Newest kernel for the latest amdgpu fixes.
       boot.kernelPackages = pkgs.linuxPackages_latest;
 
+      # S3 (deep) sleep never wakes on this AM4 board (even by RTC timer),
+      # so use s2idle (modern standby) for suspend instead.
+      boot.kernelParams = [ "mem_sleep_default=s2idle" ];
+
       system.stateVersion = "26.11";
     };
 }
