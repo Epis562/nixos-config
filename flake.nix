@@ -20,6 +20,9 @@
       url = "github:noctalia-dev/noctalia/cachix";
     };
 
+    # Declarative Flatpak remotes/packages (services.flatpak.packages).
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
+
     claude-desktop = {
       # repackages Anthropic's official Linux .deb
       url = "github:aaddrick/claude-desktop-debian";
